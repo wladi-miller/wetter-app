@@ -1,4 +1,10 @@
-$bg: rgb(13, 57, 86);
-$text: #121212;
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
+
+$font: "Inter", sans-serif;
+$bg-color: rgb(13, 57, 86);
+$bg-gradient: linear-gradient(0deg, #404547, #252e3a 51%);
+$text-color: white;
 $border: rgba(0, 0, 0, 0.15);
 $accent: #2d6cdf;
+$text-shadow: 1px 1px 5px #000;
+$box-shadow: 1px 1px 5px #0000004d;

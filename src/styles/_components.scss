@@ -1,1 +1,5 @@
-//mixin
+@mixin largeScreen {
+  @media (min-width: 700px) {
+    @content;
+  }
+}
