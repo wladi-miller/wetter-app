@@ -1,15 +1,16 @@
 @use "variables" as *;
+@import "_components";
 
 .loading {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  min-height: calc(100vh - 2rem);
   gap: 1rem;
 
   @include largeScreen {
-    height: $max-height;
+    min-height: calc(#{$max-height} - 2rem);
   }
 }
 

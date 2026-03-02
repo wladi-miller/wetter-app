@@ -1,11 +1,11 @@
-import "../main.scss";
-import "../styles/detailView.scss";
 import { getWeatherForecast } from "./api.js";
 import { rootApp } from "../main.js";
 import { formatTemperature } from "./utils.js";
+import { showLoading } from "./loading.js";
 
 export async function loadDetailView(city) {
-  loadSpinner(city);
+  showLoading(city);
+
   const weatherData = await getWeatherForecast(city);
   if (weatherData) {
     renderDetailView(weatherData);
@@ -14,18 +14,10 @@ export async function loadDetailView(city) {
   }
 }
 
-function loadSpinner(city) {
-  rootApp.innerHTML = `
-    <div class="loading">
-      <div class="lds-ring"><div></div><div></div><div></div><div></div></div>
-      <p>Lädt Wetterdaten für ${city}...</p>
-    </div>`;
-}
-
 function renderDetailView(weatherData) {
   const { location, current, forecast } = weatherData;
 
-  rootApp.innerHTML = gethHaderHtmL(
+  rootApp.innerHTML = gethHeaderHtmL(
     location.name,
     formatTemperature(current.temp_c),
     current.condition.text,
@@ -34,7 +26,7 @@ function renderDetailView(weatherData) {
   );
 }
 
-function gethHaderHtmL(location, currentTemp, condition, maxTemp, minTemp) {
+function gethHeaderHtmL(location, currentTemp, condition, maxTemp, minTemp) {
   return `
     <div class="display-weather">
       <h2 class="display-weather__location">${location}</h2>
