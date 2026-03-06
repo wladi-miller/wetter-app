@@ -1,6 +1,6 @@
-import { loadDetailView } from "./JS/detailView.js";
+import { loadWeatherView } from "./JS/weatherView.js";
 import "./main.scss";
 
 export const rootApp = document.querySelector("#app");
 
-loadDetailView("Dingolfing");
+loadWeatherView("Dingolfing");
