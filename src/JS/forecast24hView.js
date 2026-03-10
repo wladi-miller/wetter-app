@@ -1,6 +1,6 @@
 import { getHoursforecast, formatTemperature } from "./utils.js";
 
-export function getForecastViewHtml(weatherData) {
+export function getForecast24hViewHtml(weatherData) {
   const { location, forecast } = weatherData;
 
   const now = new Date(location.localtime);

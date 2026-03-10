@@ -24,4 +24,9 @@
     overflow-x: scroll;
     gap: 0.5rem;
   }
+  &__hour {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
 }
