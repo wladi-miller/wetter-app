@@ -21,5 +21,5 @@ export function dayLabel(dateString, localtime) {
     return "Heute";
   }
 
-  return new Date(dateString).toLocaleDateString("de-DE", { weekday: "long" });
+  return new Date(dateString).toLocaleDateString("de-DE", { weekday: "short" });
 }

@@ -10,26 +10,26 @@ export function getForecast24hViewHtml(weatherData) {
   const nextHours = getHoursforecast(weatherData);
 
   return `
-    <div class="forecast-day">
-      <div class="forecast-day__forecastday">
+    <div class="forecast-24h">
+      <div class="forecast-24h__forecastday">
         Aktuell ${currentHourData.condition.text}.
         Wind ${currentHourData.wind_kph} km/h.
       </div>
 
-      <div class="forecast-day__hours">
+      <div class="forecast-24h__hours">
         ${nextHours
           .map(
             (hourData) => `
-              <div class="forecast-day__hour">
-                <div class="forecast-day__time"> ${
+              <div class="forecast-24h__hour">
+                <div class="forecast-24h__time"> ${
                   new Date(hourData.time).getHours() === currentHour
                     ? "Jetzt"
                     : hourData.time.slice(-5)
                 }</div>
-                <div class="forecast-day__icon">
+                <div class="forecast-24h__icon">
                   <img src="${hourData.condition.icon}" alt="${hourData.condition.text}">
                 </div>
-                <div class="forecast-day__temp">${formatTemperature(hourData.temp_c)}°C</div>
+                <div class="forecast-24h__temp">${formatTemperature(hourData.temp_c)}°C</div>
               </div>
             `,
           )
