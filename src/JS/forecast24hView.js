@@ -13,7 +13,7 @@ export function getForecast24hViewHtml(weatherData) {
     <div class="forecast-24h">
       <div class="forecast-24h__forecastday">
         Aktuell ${currentHourData.condition.text}.
-        Wind ${currentHourData.wind_kph} km/h.
+        Wind bis zu ${currentHourData.wind_kph} km/h.
       </div>
 
       <div class="forecast-24h__hours">

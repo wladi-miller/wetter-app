@@ -13,8 +13,13 @@
   &__hours {
     width: 100%;
     display: flex;
-    overflow-x: scroll;
+    overflow-x: auto;
     gap: 0.5rem;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
   &__hour {
     display: flex;
