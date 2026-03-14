@@ -3,4 +3,4 @@ import "./main.scss";
 
 export const rootApp = document.querySelector("#app");
 
-loadWeatherView("Dingolfing");
+loadWeatherView("Moskau");
