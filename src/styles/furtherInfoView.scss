@@ -1,0 +1,14 @@
+.further-infos {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.further-info {
+  @include forecastCard;
+
+  &__value {
+    margin: 1rem 0;
+    font-size: 1.5rem;
+  }
+}

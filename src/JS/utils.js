@@ -23,3 +23,12 @@ export function dayLabel(dateString, localtime) {
 
   return new Date(dateString).toLocaleDateString("de-DE", { weekday: "short" });
 }
+
+export function formatTime24(timeString) {
+  const date = new Date(`1970-01-01 ${timeString}`);
+  return date.toLocaleTimeString("de-DE", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  });
+}

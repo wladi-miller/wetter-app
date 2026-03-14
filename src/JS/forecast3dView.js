@@ -38,7 +38,6 @@ export function getForecast3dViewHtml(weatherData) {
 
       <div class="forecast__days">
         ${forecast.forecastday
-          .slice(0, 3)
           .map((day) => getForecastDayHtml(day, location.localtime))
           .join("")}
       </div>
