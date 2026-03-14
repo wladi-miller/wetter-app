@@ -1,4 +1,4 @@
-import { dayLabel, formatTemperature } from "./utils.js";
+import { dayLabel, formatTemperature } from "../utils.js";
 
 function getForecastDayHtml(day, localtime) {
   return `

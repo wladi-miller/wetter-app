@@ -1,9 +1,9 @@
-@use "styles/_variables" as *;
-@import "styles/_components";
-@import "styles/detailView.scss";
-@import "styles/loading.scss";
-@import "styles/forecast.scss";
-@import "styles/furtherInfoView.scss";
+@use "./styles/_variables" as *;
+@import "./styles/_components";
+@import "./styles/detailView.scss";
+@import "./styles/loading.scss";
+@import "./styles/forecast.scss";
+@import "./styles/furtherInfoView.scss";
 
 * {
   margin: 0;
@@ -42,8 +42,8 @@ body {
   }
 }
 
-.background-weather {
-  background-image:
+#app.background-weather {
+  background:
     linear-gradient(0deg, #0003, #0003), var(--detail-condition-image);
   background-size: cover;
   background-position: center;

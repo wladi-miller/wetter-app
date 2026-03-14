@@ -1,6 +1,6 @@
-import { loadWeatherView } from "./weatherView.js";
+import { loadWeatherView } from "./JS/weatherView.js";
 import "./main.scss";
 
 export const rootApp = document.querySelector("#app");
 
-loadWeatherView("Moskau");
+loadWeatherView("dingolfing");

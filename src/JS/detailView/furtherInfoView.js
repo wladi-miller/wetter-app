@@ -1,4 +1,4 @@
-import { formatTime24 } from "./utils.js";
+import { formatTime24 } from "../utils.js";
 
 export function getFurtherInfoViewHtml(weatherData) {
   const { current, forecast } = weatherData;

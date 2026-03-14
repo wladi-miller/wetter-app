@@ -1,4 +1,4 @@
-import { formatTemperature } from "./utils.js";
+import { formatTemperature } from "../utils.js";
 
 export function getDetailViewHtml(weatherData) {
   const { location, current, forecast } = weatherData;

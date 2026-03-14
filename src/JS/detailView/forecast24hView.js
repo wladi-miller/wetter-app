@@ -1,4 +1,4 @@
-import { getHoursforecast, formatTemperature } from "./utils.js";
+import { getHoursforecast, formatTemperature } from "../utils.js";
 
 export function getForecast24hViewHtml(weatherData) {
   const { location, forecast } = weatherData;

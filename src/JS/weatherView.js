@@ -1,11 +1,11 @@
 import { getWeatherForecast } from "./api.js";
-import { rootApp } from "./main.js";
-import { showLoading } from "./JS/loading.js";
-import { getConditionImagePath } from "./conditions.js";
-import { getDetailViewHtml } from "./JS/headerView.js";
-import { getForecast24hViewHtml } from "./JS/forecast24hView.js";
-import { getForecast3dViewHtml } from "./JS/forecast3dView.js";
-import { getFurtherInfoViewHtml } from "./JS/furtherInfoView.js";
+import { rootApp } from "../main.js";
+import { showLoading } from "./loading.js";
+import { getConditionImagePath } from "./detailView/conditions.js";
+import { getDetailViewHtml } from "./detailView/headerView.js";
+import { getForecast24hViewHtml } from "./detailView/forecast24hView.js";
+import { getForecast3dViewHtml } from "./detailView/forecast3dView.js";
+import { getFurtherInfoViewHtml } from "./detailView/furtherInfoView.js";
 
 export async function loadWeatherView(city) {
   showLoading(city);
