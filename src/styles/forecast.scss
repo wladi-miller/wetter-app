@@ -5,7 +5,7 @@
 
   &__forecastday {
     width: 100%;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: $border-bottom;
     padding-bottom: 1rem;
     margin-bottom: 1rem;
     font-size: 1rem;
@@ -33,7 +33,7 @@
 
   &__header {
     width: 100%;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+    border-bottom: $border-bottom;
     padding-bottom: 1rem;
     margin-bottom: 1rem;
     font-size: 1rem;
@@ -51,7 +51,7 @@
   align-items: center;
   gap: 1rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: $border-bottom;
 
   &__day {
     width: 2rem;

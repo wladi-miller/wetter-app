@@ -26,6 +26,11 @@ body {
   background: $bg-gradient;
   min-height: 100vh;
   font-family: $font;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   @include largeScreen {
     width: 400px;
