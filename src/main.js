@@ -1,6 +1,9 @@
-import { loadWeatherView } from "./JS/weatherView.js";
+import { render } from "sass";
+/* import { loadMainView } from "./JS/mainView.js"; */
+import { renderMainView } from "./JS/mainView.js";
 import "./main.scss";
 
 export const rootApp = document.querySelector("#app");
 
-loadWeatherView("dingolfing");
+// loadMainView();
+renderMainView();
