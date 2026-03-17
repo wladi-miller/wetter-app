@@ -8,7 +8,25 @@
     <title>wetter-app</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app">
+      <div class="action-bar">
+      <div class="action-bar__back">
+        <button
+          data-action="back"
+          aria-label="Zurück"
+        >
+          <img src="${import.meta.env.BASE_URL}back.svg" alt="Zurück" />
+        </button></div>
+
+      <div class="action-bar__favorite">
+        <button
+          data-action="favorite"
+          aria-label="Favorit hinzufügen"
+        >
+          <img src="${import.meta.env.BASE_URL}favorite.svg" alt="Favorit" />
+        </button></div>
+      </div>
+    </div>
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
