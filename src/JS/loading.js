@@ -1,6 +1,6 @@
 import { rootApp } from "../main.js";
 
-export function showLoading(city, message = `Läde Wetterdaten für ${city}...`) {
+export function showLoading(message = `Lade...`) {
   rootApp.innerHTML = getLoadSpinner(message);
 }
 
