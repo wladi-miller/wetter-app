@@ -34,7 +34,7 @@ function getHeaderHTML() {
 }
 
 async function getCityListHTML() {
-  const favoriteCities = ["Dingolfing", "Moskau", "Peking"];
+  const favoriteCities = ["Dingolfing", "Moskau", "Mallorca"];
 
   const favoriteCitiesElements = [];
 
@@ -54,9 +54,7 @@ async function getCityListHTML() {
             <div
                 class="city"
                 data-city-name="${city}"
-                style="
-                --condition-image: url(${image});
-                "
+                ${image ? `style="--condition-image: url(${image})"` : ""}
             >
                 <div class="city__left-column">
                     <h2 class="city__name">${location.name}</h2>
@@ -88,5 +86,15 @@ function registerEventListeners() {
       const cityName = city.getAttribute("data-city-name");
       loadWeatherView(cityName);
     });
+  });
+
+  const searchInput = document.querySelector(".main-menu__search-input");
+  searchInput.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      const cityName = searchInput.value.trim();
+      if (cityName) {
+        loadWeatherView(cityName);
+      }
+    }
   });
 }
