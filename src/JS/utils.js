@@ -1,3 +1,7 @@
+function getFavoriteCitiesKey() {
+  return "favoriteCities";
+}
+
 export function formatTemperature(temp) {
   return Math.floor(temp);
 }
@@ -31,4 +35,65 @@ export function formatTime24(timeString) {
     minute: "2-digit",
     hour12: false,
   });
+}
+
+export function getFavoriteCities() {
+  const key = getFavoriteCitiesKey();
+  const stored = localStorage.getItem(key);
+
+  if (!stored) {
+    localStorage.setItem(key, JSON.stringify([]));
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(stored);
+    if (!Array.isArray(parsed)) {
+      throw new Error("Invalid favorite cities");
+    }
+    return parsed;
+  } catch {
+    localStorage.setItem(key, JSON.stringify([]));
+    return [];
+  }
+}
+
+export function addFavoriteCity(city) {
+  const cityName = city?.trim();
+  if (!cityName) {
+    return false;
+  }
+
+  const favoriteCities = getFavoriteCities();
+  const exists = favoriteCities.some(
+    (favorite) => favorite.toLowerCase() === cityName.toLowerCase(),
+  );
+
+  if (exists) {
+    return false;
+  }
+
+  const key = getFavoriteCitiesKey();
+  localStorage.setItem(key, JSON.stringify([...favoriteCities, cityName]));
+  return true;
+}
+
+export function removeFavoriteCity(city) {
+  const cityName = city?.trim();
+  if (!cityName) {
+    return false;
+  }
+
+  const favoriteCities = getFavoriteCities();
+  const filtered = favoriteCities.filter(
+    (favorite) => favorite.toLowerCase() !== cityName.toLowerCase(),
+  );
+
+  if (filtered.length === favoriteCities.length) {
+    return false;
+  }
+
+  const key = getFavoriteCitiesKey();
+  localStorage.setItem(key, JSON.stringify(filtered));
+  return true;
 }

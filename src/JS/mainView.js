@@ -3,6 +3,7 @@ import { loadWeatherView } from "./weatherView.js";
 import { showLoading } from "./loading.js";
 import { getWeatherForecast } from "./api.js";
 import { getConditionImagePath } from "./detailView/conditions.js";
+import { getFavoriteCities, removeFavoriteCity } from "./utils.js";
 
 export async function loadMainView() {
   rootApp.classList.remove("background-weather");
@@ -34,7 +35,7 @@ function getHeaderHTML() {
 }
 
 async function getCityListHTML() {
-  const favoriteCities = ["Dingolfing", "Moskau", "Mallorca"];
+  const favoriteCities = getFavoriteCities();
 
   const favoriteCitiesElements = [];
 
@@ -50,23 +51,26 @@ async function getCityListHTML() {
     );
 
     const cityHTML = `
-      <div class="city-wrapper">
-            <div
-                class="city"
-                data-city-name="${city}"
-                ${image ? `style="--condition-image: url(${image})"` : ""}
-            >
-                <div class="city__left-column">
-                    <h2 class="city__name">${location.name}</h2>
-                    <div class="city__country">${location.country}</div>
-                    <div class="city__condition">${current.condition.text}</div>
-                </div>
-                <div class="city__right-column">
-                    <div class="city__temperature">${current.temp_c}</div>
-                    <div class="city__min-max-temperature">H:${currentDay.day.maxtemp_c} T:${currentDay.day.mintemp_c}</div>
-                </div>
-            </div>
-        </div>
+  <div class="city-wrapper" data-city-name="${city}">
+    <div
+      class="city"
+      data-city-name="${city}"
+      ${image ? `style="--condition-image: url(${image})"` : ""}
+    >
+      <div class="city__left-column">
+        <h2 class="city__name">${location.name}</h2>
+        <div class="city__country">${location.country}</div>
+        <div class="city__condition">${current.condition.text}</div>
+      </div>
+      <div class="city__right-column">
+        <div class="city__temperature">${current.temp_c}</div>
+        <div class="city__min-max-temperature">H:${currentDay.day.maxtemp_c} T:${currentDay.day.mintemp_c}</div>
+      </div>
+    </div>
+    <button class="city-wrapper__delete" data-delete-city="${city}" aria-label="Stadt löschen">
+      <img src="${import.meta.env.BASE_URL}delete.svg" alt="Löschen" />
+    </button>
+  </div>
     `;
     favoriteCitiesElements.push(cityHTML);
   }
@@ -96,5 +100,26 @@ function registerEventListeners() {
         loadWeatherView(cityName);
       }
     }
+  });
+
+  const mainMenu = document.querySelector(".main-menu");
+  const editButton = document.querySelector(".main-menu__edit");
+
+  editButton?.addEventListener("click", () => {
+    const isEditMode = editButton.textContent.trim() === "Bearbeiten";
+    editButton.textContent = isEditMode ? "Fertig" : "Bearbeiten";
+    mainMenu?.classList.toggle("main-menu--edit-mode", isEditMode);
+  });
+
+  const deleteButtons = document.querySelectorAll(".city-wrapper__delete");
+  deleteButtons.forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const cityName = button.getAttribute("data-delete-city");
+      const removed = removeFavoriteCity(cityName);
+      if (removed) {
+        button.closest(".city-wrapper")?.remove();
+      }
+    });
   });
 }
