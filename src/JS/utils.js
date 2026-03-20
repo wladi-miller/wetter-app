@@ -51,43 +51,40 @@ export function getFavoriteCities() {
     if (!Array.isArray(parsed)) {
       throw new Error("Invalid favorite cities");
     }
-    return parsed;
+    
+    const validIds = parsed.filter(item => typeof item === 'number' || !isNaN(Number(item)));
+    if (validIds.length !== parsed.length) {
+      localStorage.setItem(key, JSON.stringify(validIds));
+    }
+    return validIds.map(id => String(id));
   } catch {
     localStorage.setItem(key, JSON.stringify([]));
     return [];
   }
 }
 
-export function addFavoriteCity(city) {
-  const cityName = city?.trim();
-  if (!cityName) {
-    return false;
-  }
+export function addFavoriteCity(cityId) {
+  if (!cityId) return false;
+  const idStr = String(cityId).trim();
 
   const favoriteCities = getFavoriteCities();
-  const exists = favoriteCities.some(
-    (favorite) => favorite.toLowerCase() === cityName.toLowerCase(),
-  );
+  const exists = favoriteCities.some((favorite) => favorite === idStr);
 
   if (exists) {
     return false;
   }
 
   const key = getFavoriteCitiesKey();
-  localStorage.setItem(key, JSON.stringify([...favoriteCities, cityName]));
+  localStorage.setItem(key, JSON.stringify([...favoriteCities, idStr]));
   return true;
 }
 
-export function removeFavoriteCity(city) {
-  const cityName = city?.trim();
-  if (!cityName) {
-    return false;
-  }
+export function removeFavoriteCity(cityId) {
+  if (!cityId) return false;
+  const idStr = String(cityId).trim();
 
   const favoriteCities = getFavoriteCities();
-  const filtered = favoriteCities.filter(
-    (favorite) => favorite.toLowerCase() !== cityName.toLowerCase(),
-  );
+  const filtered = favoriteCities.filter((favorite) => favorite !== idStr);
 
   if (filtered.length === favoriteCities.length) {
     return false;

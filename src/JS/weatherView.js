@@ -8,10 +8,10 @@ import { getForecast3dViewHtml } from "./detailView/forecast3dView.js";
 import { getFurtherInfoViewHtml } from "./detailView/furtherInfoView.js";
 import { addFavoriteCity, getFavoriteCities } from "./utils.js";
 
-export async function loadWeatherView(city) {
-  showLoading(city);
+export async function loadWeatherView(cityQuery) {
+  showLoading("Lade Wetter...");
 
-  const weatherData = await getWeatherForecast(city);
+  const weatherData = await getWeatherForecast(cityQuery);
 
   if (!weatherData) {
     rootApp.innerHTML = `<p>Fehler: Keine Wetterdaten verfügbar</p>`;
@@ -32,16 +32,17 @@ export async function loadWeatherView(city) {
                        ${getForecast3dViewHtml(weatherData)}
                        ${getFurtherInfoViewHtml(weatherData)}`;
 
-  registerActionListeners(weatherData.location.name);
+  const cityId = cityQuery.startsWith("id:") ? cityQuery.slice(3) : cityQuery;
+  registerActionListeners(cityId);
 }
 
-function registerActionListeners(cityName) {
+function registerActionListeners(cityId) {
   const backButton = rootApp.querySelector('[data-action="back"]');
   const favoriteButton = rootApp.querySelector('[data-action="favorite"]');
 
   if (favoriteButton) {
     const alreadyFavorite = getFavoriteCities().some(
-      (favorite) => favorite.toLowerCase() === cityName.toLowerCase(),
+      (favorite) => favorite === String(cityId),
     );
     favoriteButton.disabled = alreadyFavorite;
   }
@@ -52,7 +53,7 @@ function registerActionListeners(cityName) {
   });
 
   favoriteButton?.addEventListener("click", () => {
-    const added = addFavoriteCity(cityName);
+    const added = addFavoriteCity(cityId);
     if (added) {
       favoriteButton.disabled = true;
     }
