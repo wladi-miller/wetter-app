@@ -49,7 +49,7 @@ export function getFavoriteCities() {
   try {
     const parsed = JSON.parse(stored);
     if (!Array.isArray(parsed)) {
-      throw new Error("Invalid favorite cities");
+      throw new Error("keine gültige Stadt");
     }
 
     const validIds = parsed.filter(

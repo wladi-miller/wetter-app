@@ -130,13 +130,6 @@ async function getCityListHTML() {
     </div>`;
 }
 
-function openCityWithDelay(cityId) {
-  clearTimeout(citySelectionTimeoutId);
-  citySelectionTimeoutId = window.setTimeout(() => {
-    loadWeatherView("id:" + cityId);
-  }, CITY_SELECTION_DELAY);
-}
-
 function registerEventListeners() {
   const cities = document.querySelectorAll(".city");
   let latestSearchRequestId = 0;
