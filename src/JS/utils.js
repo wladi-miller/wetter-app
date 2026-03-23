@@ -51,12 +51,14 @@ export function getFavoriteCities() {
     if (!Array.isArray(parsed)) {
       throw new Error("Invalid favorite cities");
     }
-    
-    const validIds = parsed.filter(item => typeof item === 'number' || !isNaN(Number(item)));
+
+    const validIds = parsed.filter(
+      (item) => typeof item === "number" || !isNaN(Number(item)),
+    );
     if (validIds.length !== parsed.length) {
       localStorage.setItem(key, JSON.stringify(validIds));
     }
-    return validIds.map(id => String(id));
+    return validIds.map((id) => String(id));
   } catch {
     localStorage.setItem(key, JSON.stringify([]));
     return [];
@@ -93,4 +95,26 @@ export function removeFavoriteCity(cityId) {
   const key = getFavoriteCitiesKey();
   localStorage.setItem(key, JSON.stringify(filtered));
   return true;
+}
+
+export function sanitizeSearchQuery(value) {
+  if (typeof value !== "string") return "";
+
+  const trimmed = value.trim().slice(0, 80);
+  const allowedChars = trimmed.replace(/[^A-Za-zÀ-ÖØ-öø-ÿ0-9\s.,'-]/g, "");
+  return allowedChars.replace(/\s+/g, " ");
+}
+
+export function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+export function normalizeCityId(value) {
+  const id = String(value ?? "").trim();
+  return /^\d+$/.test(id) ? id : null;
 }

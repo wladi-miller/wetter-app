@@ -3,7 +3,17 @@ import { loadWeatherView } from "./weatherView.js";
 import { showLoading } from "./loading.js";
 import { cityIDSought, getWeatherForecast } from "./api.js";
 import { getConditionImagePath } from "./detailView/conditions.js";
-import { getFavoriteCities, removeFavoriteCity } from "./utils.js";
+import {
+  getFavoriteCities,
+  removeFavoriteCity,
+  sanitizeSearchQuery,
+  escapeHtml,
+  normalizeCityId,
+} from "./utils.js";
+
+let searchDebounceTimeoutId;
+const SEARCH_DEBOUNCE_DELAY = 500;
+const CITY_SELECTION_DELAY = 500;
 
 export async function loadMainView() {
   rootApp.classList.remove("background-weather");
@@ -35,35 +45,33 @@ function getHeaderHTML() {
     </div>`;
 }
 
-function renderSearchResults(searchResults) {
-  const searchResultsElements = searchResults.map(
-    (result) =>
-      `
-        <div class="search-result" data-city-id="${result.id}" data-city-name="${result.name}" tabindex="0">
-            <h3 class="search-result__name">${result.name}</h3>
-            <p class="search-result__country">${result.country}</p>
-        </div>
+function renderSearchResults(searchResults, onCitySelect) {
+  const safeResults = searchResults
+    .map((result) => ({
+      id: normalizeCityId(result.id),
+      name: escapeHtml(result.name),
+      country: escapeHtml(result.country),
+    }))
+    .filter((result) => result.id);
+
+  const searchResultsElements = safeResults.map(
+    (result) => `
+      <div class="search-result" data-city-id="${result.id}" data-city-name="${result.name}" tabindex="0">
+        <h3 class="search-result__name">${result.name}</h3>
+        <p class="search-result__country">${result.country}</p>
+      </div>
     `,
   );
 
-  const searchResultsHtml = searchResultsElements.join("");
-
   const searchResultsDiv = document.querySelector(".main-menu__search-results");
-  searchResultsDiv.innerHTML = searchResultsHtml;
-
-  if (searchResults.length > 0) {
-    searchResultsDiv.style.display = "flex";
-  } else {
-    searchResultsDiv.style.display = "none";
-  }
+  searchResultsDiv.innerHTML = searchResultsElements.join("");
+  searchResultsDiv.style.display = safeResults.length > 0 ? "flex" : "none";
 
   const resultElements = searchResultsDiv.querySelectorAll(".search-result");
   resultElements.forEach((el) => {
     el.addEventListener("click", () => {
-      const cityId = el.getAttribute("data-city-id");
-      if (cityId) {
-        loadWeatherView("id:" + cityId);
-      }
+      const cityId = normalizeCityId(el.getAttribute("data-city-id"));
+      if (cityId) onCitySelect(cityId);
     });
   });
 }
@@ -74,10 +82,14 @@ async function getCityListHTML() {
   const favoriteCitiesElements = [];
 
   for (let cityId of favoriteCities) {
-    const weatherData = await getWeatherForecast("id:" + cityId, 1);
+    const safeCityId = normalizeCityId(cityId);
+    if (!safeCityId) continue;
+    const weatherData = await getWeatherForecast("id:" + safeCityId, 1);
+    console.log(weatherData);
     if (!weatherData) continue;
 
     const { location, current, forecast } = weatherData;
+    console.log(location, current, forecast);
     const currentDay = forecast.forecastday[0];
 
     const image = getConditionImagePath(
@@ -85,24 +97,24 @@ async function getCityListHTML() {
       current.is_day !== 1,
     );
 
+    const safeName = escapeHtml(location.name);
+    const safeCountry = escapeHtml(location.country);
+    const safeCondition = escapeHtml(current.condition.text);
+
     const cityHTML = `
-  <div class="city-wrapper" data-city-id="${cityId}">
-    <div
-      class="city"
-      data-city-id="${cityId}"
-      ${image ? `style="--condition-image: url(${image})"` : ""}
-    >
+  <div class="city-wrapper" data-city-id="${safeCityId}">
+    <div class="city" data-city-id="${safeCityId}" ${image ? `style="--condition-image: url(${image})"` : ""}>
       <div class="city__left-column">
-        <h2 class="city__name">${location.name}</h2>
-        <div class="city__country">${location.country}</div>
-        <div class="city__condition">${current.condition.text}</div>
+        <h2 class="city__name">${safeName}</h2>
+        <div class="city__country">${safeCountry}</div>
+        <div class="city__condition">${safeCondition}</div>
       </div>
       <div class="city__right-column">
         <div class="city__temperature">${current.temp_c}</div>
         <div class="city__min-max-temperature">H:${currentDay.day.maxtemp_c} T:${currentDay.day.mintemp_c}</div>
       </div>
     </div>
-    <button class="city-wrapper__delete" data-delete-city="${cityId}" aria-label="Stadt löschen">
+    <button class="city-wrapper__delete" data-delete-city="${safeCityId}" aria-label="Stadt löschen">
       <img src="${import.meta.env.BASE_URL}delete.svg" alt="Löschen" />
     </button>
   </div>
@@ -118,39 +130,80 @@ async function getCityListHTML() {
     </div>`;
 }
 
+function openCityWithDelay(cityId) {
+  clearTimeout(citySelectionTimeoutId);
+  citySelectionTimeoutId = window.setTimeout(() => {
+    loadWeatherView("id:" + cityId);
+  }, CITY_SELECTION_DELAY);
+}
+
 function registerEventListeners() {
   const cities = document.querySelectorAll(".city");
+  let latestSearchRequestId = 0;
+  let citySelectionTimeoutId;
+
+  function openCityWithDelay(cityId) {
+    clearTimeout(citySelectionTimeoutId);
+    citySelectionTimeoutId = window.setTimeout(() => {
+      loadWeatherView("id:" + cityId);
+    }, CITY_SELECTION_DELAY);
+  }
+
   cities.forEach((city) => {
     city.addEventListener("click", () => {
       const cityId = city.getAttribute("data-city-id");
       if (cityId) {
-        loadWeatherView("id:" + cityId);
+        openCityWithDelay(cityId);
       }
     });
   });
 
-  const searchBar = document.querySelector(".main-menu__search-input");
-  searchBar.addEventListener("input", async (e) => {
-    const query = e.target.value;
+  const searchInput = document.querySelector(".main-menu__search-input");
 
-    if (query.length > 1) {
-      const searchResult = await cityIDSought(query);
-      console.log(searchResult);
-      renderSearchResults(searchResult);
-    } else {
-      renderSearchResults([]);
+  async function searchCities(query) {
+    const normalizedQuery = sanitizeSearchQuery(query);
+
+    if (normalizedQuery.length <= 1) {
+      latestSearchRequestId += 1;
+      renderSearchResults([], openCityWithDelay);
+      return [];
     }
+
+    const requestId = ++latestSearchRequestId;
+    const searchResult = await cityIDSought(normalizedQuery);
+
+    if (
+      requestId !== latestSearchRequestId ||
+      searchInput.value.trim() !== normalizedQuery
+    ) {
+      return [];
+    }
+
+    renderSearchResults(searchResult, openCityWithDelay);
+    return searchResult;
+  }
+
+  searchInput.addEventListener("input", (event) => {
+    const safeValue = sanitizeSearchQuery(event.target.value);
+    event.target.value = safeValue;
+
+    clearTimeout(searchDebounceTimeoutId);
+    searchDebounceTimeoutId = window.setTimeout(() => {
+      searchCities(safeValue);
+    }, SEARCH_DEBOUNCE_DELAY);
   });
 
-  const searchInput = document.querySelector(".main-menu__search-input");
   searchInput.addEventListener("keydown", async (event) => {
     if (event.key === "Enter") {
       const query = searchInput.value.trim();
-      if (query) {
-        const searchResult = await cityIDSought(query);
-        if (searchResult && searchResult.length > 0) {
-          loadWeatherView("id:" + searchResult[0].id);
-        }
+
+      if (!query) {
+        return;
+      }
+
+      const searchResult = await searchCities(query);
+      if (searchResult.length > 0) {
+        openCityWithDelay(searchResult[0].id);
       }
     }
   });
