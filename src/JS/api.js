@@ -4,6 +4,7 @@ const SEARCH_URL = "https://api.weatherapi.com/v1/search.json";
 
 export async function getWeatherForecast(city, days = 3) {
   try {
+    // API erlaubt max. 10 Tage, begrenzen auf 3 Tage, damit die App übersichtlich bleibt
     const safeDays = Math.min(10, Math.max(1, Number(days) || 3));
     const safeCity = encodeURIComponent(String(city ?? "").trim());
     const url = `${FORECAST_URL}?key=${API_KEY}&q=${safeCity}&days=${safeDays}&lang=de&alerts=yes`;
