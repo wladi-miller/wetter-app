@@ -26,6 +26,7 @@
 
   &__search-bar {
     width: 100%;
+    position: relative;
   }
 
   &__search-input {
@@ -37,14 +38,18 @@
     box-sizing: border-box;
   }
   &__search-results {
-    margin-top: 0.5rem;
+    position: absolute;
+    top: calc(100% + 0.25rem);
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    background-color: $elevation-2;
     border-radius: $border-radius;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     max-height: 200px;
     overflow-y: auto;
     display: none;
     flex-direction: column;
-    gap: 0.5rem;
-    padding: 0.5rem;
     scrollbar-width: none;
     -ms-overflow-style: none;
     &::-webkit-scrollbar {
@@ -60,10 +65,13 @@
     }
     .search-result {
       padding: 0.75rem;
-      border-radius: $border-radius;
-      background-color: $elevation-2;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.15);
       cursor: pointer;
+      transition: background-color 0.2s ease;
+
+      &:last-child {
+        border-bottom: none;
+      }
 
       &:hover {
         background-color: lighten($elevation-2, 5%);
@@ -79,14 +87,14 @@
   &__city-list {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
   }
 
   .city-wrapper {
     display: flex;
     align-items: center;
-    gap: 1rem;
     width: 100%;
+    margin-bottom: 0.5rem;
+    /* border-bottom: 1px solid rgba(255, 255, 255, 0.35); */
 
     &__delete {
       display: none;
@@ -106,6 +114,12 @@
       filter: brightness(0) saturate(100%) invert(17%) sepia(92%)
         saturate(6284%) hue-rotate(356deg) brightness(98%) contrast(118%);
     }
+  }
+
+  .city-wrapper:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
   }
 
   &.main-menu--edit-mode .city-wrapper__delete {

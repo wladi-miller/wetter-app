@@ -1,5 +1,5 @@
 @use "./styles/_variables" as *;
-@import "./styles/_components";
+@import "./styles/_mixins";
 @import "./styles/detailView.scss";
 @import "./styles/loading.scss";
 @import "./styles/forecast.scss";

@@ -9,6 +9,7 @@ import {
   sanitizeSearchQuery,
   escapeHtml,
   normalizeCityId,
+  formatTemperature,
 } from "./utils.js";
 
 let searchDebounceTimeoutId;
@@ -110,8 +111,8 @@ async function getCityListHTML() {
         <div class="city__condition">${safeCondition}</div>
       </div>
       <div class="city__right-column">
-        <div class="city__temperature">${current.temp_c}</div>
-        <div class="city__min-max-temperature">H:${currentDay.day.maxtemp_c} T:${currentDay.day.mintemp_c}</div>
+        <div class="city__temperature">${formatTemperature(current.temp_c)}°</div>
+        <div class="city__min-max-temperature">H:${formatTemperature(currentDay.day.maxtemp_c)}° T:${formatTemperature(currentDay.day.mintemp_c)}°</div>
       </div>
     </div>
     <button class="city-wrapper__delete" data-delete-city="${safeCityId}" aria-label="Stadt löschen">
