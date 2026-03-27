@@ -24,7 +24,7 @@ export async function getWeatherForecast(city, days = 3) {
   }
 }
 
-export async function cityIDSought(query) {
+export async function getSafeCityIDs(query) {
   try {
     const safeQuery = encodeURIComponent(String(query ?? "").trim());
     const url = `${SEARCH_URL}?key=${API_KEY}&q=${safeQuery}&lang=de`;

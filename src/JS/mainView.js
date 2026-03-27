@@ -1,7 +1,7 @@
 import { rootApp } from "../main.js";
 import { loadWeatherView } from "./weatherView.js";
 import { showLoading } from "./loading.js";
-import { cityIDSought, getWeatherForecast } from "./api.js";
+import { getSafeCityIDs, getWeatherForecast } from "./api.js";
 import { getConditionImagePath } from "./detailView/conditions.js";
 import {
   getFavoriteCities,
@@ -14,7 +14,6 @@ import {
 
 let searchDebounceTimeoutId;
 const SEARCH_DEBOUNCE_DELAY = 500;
-const CITY_SELECTION_DELAY = 500;
 
 export async function loadMainView() {
   rootApp.classList.remove("background-weather");
@@ -46,7 +45,7 @@ function getHeaderHTML() {
     </div>`;
 }
 
-function renderSearchResults(searchResults, onCitySelect) {
+function renderSearchResults(searchResults, openCity) {
   const safeResults = searchResults
     .map((result) => ({
       id: normalizeCityId(result.id),
@@ -72,7 +71,7 @@ function renderSearchResults(searchResults, onCitySelect) {
   resultElements.forEach((el) => {
     el.addEventListener("click", () => {
       const cityId = normalizeCityId(el.getAttribute("data-city-id"));
-      if (cityId) onCitySelect(cityId);
+      if (cityId) openCity(cityId);
     });
   });
 }
@@ -133,37 +132,28 @@ async function getCityListHTML() {
 function registerEventListeners() {
   const cities = document.querySelectorAll(".city");
   let latestSearchRequestId = 0;
-  let citySelectionTimeoutId;
-
-  function openCityWithDelay(cityId) {
-    clearTimeout(citySelectionTimeoutId);
-    citySelectionTimeoutId = window.setTimeout(() => {
-      loadWeatherView("id:" + cityId);
-    }, CITY_SELECTION_DELAY);
-  }
+  const openCity = (cityId) => loadWeatherView("id:" + cityId);
 
   cities.forEach((city) => {
     city.addEventListener("click", () => {
       const cityId = city.getAttribute("data-city-id");
-      if (cityId) {
-        openCityWithDelay(cityId);
-      }
+      if (cityId) openCity(cityId);
     });
   });
 
   const searchInput = document.querySelector(".main-menu__search-input");
-  searchInput.value = ""; // autofill reset
+  searchInput.value = "";
   async function searchCities(query) {
     const normalizedQuery = sanitizeSearchQuery(query);
 
     if (normalizedQuery.length <= 1) {
       latestSearchRequestId += 1;
-      renderSearchResults([], openCityWithDelay);
+      renderSearchResults([], openCity);
       return [];
     }
 
     const requestId = ++latestSearchRequestId;
-    const searchResult = await cityIDSought(normalizedQuery);
+    const searchResult = await getSafeCityIDs(normalizedQuery);
 
     if (
       requestId !== latestSearchRequestId ||
@@ -172,7 +162,7 @@ function registerEventListeners() {
       return [];
     }
 
-    renderSearchResults(searchResult, openCityWithDelay);
+    renderSearchResults(searchResult, openCity);
     return searchResult;
   }
 
@@ -196,7 +186,7 @@ function registerEventListeners() {
 
       const searchResult = await searchCities(query);
       if (searchResult.length > 0) {
-        openCityWithDelay(searchResult[0].id);
+        openCity(searchResult[0].id);
       }
     }
   });
