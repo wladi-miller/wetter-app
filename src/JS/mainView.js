@@ -86,11 +86,10 @@ async function getCityListHTML() {
     const safeCityId = normalizeCityId(cityId);
     if (!safeCityId) continue;
     const weatherData = await getWeatherForecast("id:" + safeCityId, 1);
-    console.log(weatherData);
+
     if (!weatherData) continue;
 
     const { location, current, forecast } = weatherData;
-    console.log(location, current, forecast);
     const currentDay = forecast.forecastday[0];
 
     const image = getConditionImagePath(
@@ -153,7 +152,7 @@ function registerEventListeners() {
   });
 
   const searchInput = document.querySelector(".main-menu__search-input");
-
+  searchInput.value = ""; // autofill reset
   async function searchCities(query) {
     const normalizedQuery = sanitizeSearchQuery(query);
 

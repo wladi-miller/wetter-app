@@ -1,5 +1,5 @@
 function getFavoriteCitiesKey() {
-  return "favoriteCities";
+  return "wetterApp_favoriteCities";
 }
 
 export function formatTemperature(temp) {

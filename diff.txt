@@ -1,0 +1,17 @@
+diff --git a/src/JS/mainView.js b/src/JS/mainView.js
+index 03fa13a..03ee949 100644
+--- a/src/JS/mainView.js
++++ b/src/JS/mainView.js
+@@ -86,11 +86,10 @@ async function getCityListHTML() {
+     const safeCityId = normalizeCityId(cityId);
+     if (!safeCityId) continue;
+     const weatherData = await getWeatherForecast("id:" + safeCityId, 1);
+-    console.log(weatherData);
++
+     if (!weatherData) continue;
+ 
+     const { location, current, forecast } = weatherData;
+-    console.log(location, current, forecast);
+     const currentDay = forecast.forecastday[0];
+ 
+     const image = getConditionImagePath(
